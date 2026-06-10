@@ -72,6 +72,25 @@ const SHIELD_PROTECTION: Scene[] = [
   },
 ];
 
+// ── Brand (reusable title cards) ─────────────────────────────────────────────
+const BRAND: Scene[] = [
+  {
+    id: "BunnyBumper",
+    durationInFrames: SEC7,
+    load: () => import("@/campaigns/brand/TitleBumper/TitleBumper").then((m) => ({ default: m.BunnyBumper })),
+  },
+  {
+    id: "BunnyBumperGreen",
+    durationInFrames: SEC7,
+    load: () => import("@/campaigns/brand/TitleBumper/TitleBumper").then((m) => ({ default: m.BunnyBumperGreen })),
+  },
+  {
+    id: "BunnyBumperGreenWhite",
+    durationInFrames: SEC7,
+    load: () => import("@/campaigns/brand/TitleBumper/TitleBumper").then((m) => ({ default: m.BunnyBumperGreenWhite })),
+  },
+];
+
 // ── CLI campaign ────────────────────────────────────────────────────────────
 const CLI: Scene[] = [
   {
@@ -102,6 +121,9 @@ export const RemotionRoot: React.FC = () => (
   <>
     <Folder name="Shield-Protection">
       <Scenes scenes={SHIELD_PROTECTION} />
+    </Folder>
+    <Folder name="Brand">
+      <Scenes scenes={BRAND} />
     </Folder>
     <Folder name="CLI">
       <Scenes scenes={CLI} />
