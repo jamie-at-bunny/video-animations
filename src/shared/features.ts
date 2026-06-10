@@ -1,5 +1,5 @@
 // The real Bunny Shield feature grid (bunny.net/shield).
-// Shared across LegacyStack and UnifiedEdge so both scenes use the same set.
+// Shared across FeatureList and UnifiedEdge so both scenes use the same set.
 
 export type FeatureId =
   | "waf"

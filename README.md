@@ -20,6 +20,8 @@ src/
     SceneTransition.tsx     #   eased fade in/out wrapper every scene sits inside
     brand.tsx               #   <BunnyLogo variant> + <ShieldMascot> (single-source asset names)
     BrandBumper.tsx         #   <BrandBumper> reusable hero+title card (navy/green/light themes)
+    FeatureList.tsx         #   <FeatureList> centred brand feature cards (schema-driven; dark/green/light)
+    featureListSchema.ts    #   Zod schema + defaults for <FeatureList> (theme + composable icon/text rows)
     Glow.tsx                #   <Glow> soft radial brand glow ("bubble of light")
     ImpactRing.tsx          #   <ImpactRing> expanding/fading ring on rejection or impact
     BadTraffic.tsx          #   makeBads() + <BadDot> — red request flies in, bounces off a gate
@@ -27,10 +29,12 @@ src/
     FeatureIcon.tsx         #   renders official feature icons
   campaigns/
     shield-protection/      # Shield Protection campaign
-      BunnyShield/  LegacyStack/  UnifiedEdge/  Fingerprint/
+      BunnyShield/  UnifiedEdge/  Fingerprint/
       Pillars/  Stats/  Frictionless/  Bumper/  AILearning/
     brand/                  # reusable bunny.net title cards
-      TitleBumper/
+      TitleBumper/          # (the FeatureList compositions are schema-driven, registered from shared/)
+    edge-scripting/         # Edge Scripting examples
+      HTMLRewriter/
     cli/                    # CLI campaign
       EdgeScriptsDeploy/
 ```
@@ -66,7 +70,6 @@ All scenes are 1920×1080 @ 30fps, 7s (210 frames) unless noted. Render at 3K wi
 | Composition | Length | Preview |
 | --- | --- | --- |
 | [`BunnyShield`](./src/campaigns/shield-protection/BunnyShield/BunnyShield.tsx) | 7s | <img src="./assets/previews/BunnyShield.gif" width="360"> |
-| [`LegacyStack`](./src/campaigns/shield-protection/LegacyStack/LegacyStack.tsx) | 7s | <img src="./assets/previews/LegacyStack.gif" width="360"> |
 | [`UnifiedEdge`](./src/campaigns/shield-protection/UnifiedEdge/UnifiedEdge.tsx) | 7s | <img src="./assets/previews/UnifiedEdge.gif" width="360"> |
 | [`Fingerprint`](./src/campaigns/shield-protection/Fingerprint/Fingerprint.tsx) | 7s | <img src="./assets/previews/Fingerprint.gif" width="360"> |
 | [`OneLayer`](./src/campaigns/shield-protection/Pillars/OneLayer.tsx) | 7s | <img src="./assets/previews/OneLayer.gif" width="360"> |
@@ -78,14 +81,24 @@ All scenes are 1920×1080 @ 30fps, 7s (210 frames) unless noted. Render at 3K wi
 
 ### Brand
 
-Reusable title cards built on the shared `<BrandBumper>`. Swap the hero for any product
-mascot/logo and pick a theme (`navy` / `green` / `light`).
+Reusable cards built on the shared `<BrandBumper>` / `<FeatureList>`. Swap the hero or feature
+set and pick a theme (`navy`/`dark` · `green` · `light`). The `FeatureList*` compositions are
+**schema-driven** ([`featureListSchema`](./src/shared/featureListSchema.ts)) — edit the rows in the
+Studio props panel, or override per render with `--props`. Each row's `icon` and `label` are optional.
 
 | Composition | Length | Preview |
 | --- | --- | --- |
+| [`FeatureListDark`](./src/shared/FeatureList.tsx) | 7s | <img src="./assets/previews/FeatureListDark.gif" width="360"> |
+| [`FeatureListGreen`](./src/shared/FeatureList.tsx) | 7s | <img src="./assets/previews/FeatureListGreen.gif" width="360"> |
 | [`BunnyBumper`](./src/campaigns/brand/TitleBumper/TitleBumper.tsx) | 7s | <img src="./assets/previews/BunnyBumper.gif" width="360"> |
 | [`BunnyBumperGreen`](./src/campaigns/brand/TitleBumper/TitleBumper.tsx) | 7s | <img src="./assets/previews/BunnyBumperGreen.gif" width="360"> |
 | [`BunnyBumperGreenWhite`](./src/campaigns/brand/TitleBumper/TitleBumper.tsx) | 7s | <img src="./assets/previews/BunnyBumperGreenWhite.gif" width="360"> |
+
+### Edge Scripting
+
+| Composition | Length | Preview |
+| --- | --- | --- |
+| [`HTMLRewriter`](./src/campaigns/edge-scripting/HTMLRewriter/HTMLRewriter.tsx) | 12s | <img src="./assets/previews/HTMLRewriter.gif" width="360"> |
 
 ### CLI
 
@@ -119,7 +132,8 @@ npx remotion still <CompositionId> out/<name>.png --frame=120
 2. Wrap visuals in `<SceneTransition>`, pull colours/fonts from `@/shared/theme`, and reuse the
    shared visual primitives where they fit — `<BunnyLogo>` / `<ShieldMascot>` (`brand.tsx`),
    `<Glow>`, `<ImpactRing>`, `BadTraffic`'s `makeBads()` + `<BadDot>` for rejected traffic, and
-   `<BrandBumper>` for any product/title bumper (pass your own `artwork` + `title` + `theme`).
+   `<BrandBumper>` for any product/title bumper, and `<FeatureList>` for a centred feature-card
+   list (both take your own content + a `theme`).
 3. Register it in [`Root.tsx`](./src/Root.tsx): add an entry to that campaign's scene array with
    its `id`, `durationInFrames`, and a lazy `load` importer.
 4. Add it to the table above and generate its preview: `npm run previews -- <Id>`.

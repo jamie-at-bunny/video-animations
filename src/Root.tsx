@@ -1,6 +1,11 @@
 import "./index.css";
 import { Composition, Folder } from "remotion";
 import { WIDTH, HEIGHT, FPS } from "@/shared/theme";
+import { featureListSchema, BUNNY_FEATURES } from "@/shared/featureListSchema";
+
+// <FeatureList> is schema-driven (theme + composable icon/text rows), so it's
+// registered with `schema` + `defaultProps` — editable in the Studio props panel.
+const loadFeatureList = () => import("@/shared/FeatureList").then((m) => ({ default: m.FeatureList }));
 
 // Standard scene length: 7s @ 30fps. Override per-scene where needed.
 const SEC7 = 210;
@@ -20,12 +25,6 @@ const SHIELD_PROTECTION: Scene[] = [
     durationInFrames: SEC7,
     load: () =>
       import("@/campaigns/shield-protection/BunnyShield/BunnyShield").then((m) => ({ default: m.BunnyShield })),
-  },
-  {
-    id: "LegacyStack",
-    durationInFrames: SEC7,
-    load: () =>
-      import("@/campaigns/shield-protection/LegacyStack/LegacyStack").then((m) => ({ default: m.LegacyStack })),
   },
   {
     id: "UnifiedEdge",
@@ -101,6 +100,16 @@ const CLI: Scene[] = [
   },
 ];
 
+// ── Edge Scripting examples ──────────────────────────────────────────────────
+const EDGE_SCRIPTING: Scene[] = [
+  {
+    id: "HTMLRewriter",
+    durationInFrames: 360, // 12s — guided code walkthrough
+    load: () =>
+      import("@/campaigns/edge-scripting/HTMLRewriter/HTMLRewriter").then((m) => ({ default: m.HTMLRewriter })),
+  },
+];
+
 const Scenes: React.FC<{ scenes: Scene[] }> = ({ scenes }) => (
   <>
     {scenes.map((s) => (
@@ -123,7 +132,30 @@ export const RemotionRoot: React.FC = () => (
       <Scenes scenes={SHIELD_PROTECTION} />
     </Folder>
     <Folder name="Brand">
+      <Composition
+        id="FeatureListDark"
+        lazyComponent={loadFeatureList}
+        schema={featureListSchema}
+        defaultProps={{ theme: "dark" as const, features: BUNNY_FEATURES }}
+        durationInFrames={SEC7}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+      />
+      <Composition
+        id="FeatureListGreen"
+        lazyComponent={loadFeatureList}
+        schema={featureListSchema}
+        defaultProps={{ theme: "green" as const, features: BUNNY_FEATURES }}
+        durationInFrames={SEC7}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+      />
       <Scenes scenes={BRAND} />
+    </Folder>
+    <Folder name="Edge-Scripting">
+      <Scenes scenes={EDGE_SCRIPTING} />
     </Folder>
     <Folder name="CLI">
       <Scenes scenes={CLI} />
